@@ -169,7 +169,7 @@ void LocalRenderer::status()
 
 void usage( const char* argv0 )
 {
-  cerr << argv0 << " SCENE-DATA SPP" << endl;
+  cerr << argv0 << " SCENE-DATA SPP THREADS" << endl;
 }
 
 int main( int argc, char const* argv[] )
@@ -179,7 +179,7 @@ int main( int argc, char const* argv[] )
       abort();
     }
 
-    if ( argc != 3 ) {
+    if ( argc != 3  && argc != 4) {
       usage( argv[0] );
       return EXIT_FAILURE;
     }
@@ -189,8 +189,9 @@ int main( int argc, char const* argv[] )
 
     const string scene_path { argv[1] };
     const int spp { stoi( argv[2] ) };
+    const size_t thread_count { argc == 4 ? stoi( argv[3] ) : thread::hardware_concurrency() };
 
-    LocalRenderer renderer { scene_path, spp, thread::hardware_concurrency() };
+    LocalRenderer renderer { scene_path, spp, thread_count };
   } catch ( exception& ex ) {
     print_exception( argv[0], ex );
     return EXIT_FAILURE;
